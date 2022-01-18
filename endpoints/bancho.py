@@ -1,15 +1,16 @@
 import uuid, time
-from objects.player import Player
 
 from xevel import Router, Request
 from cryptography.hazmat.backends import default_backend as backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.hkdf import HKDFExpand
 
-from objects import glob, packets
+from objects import glob
 from helpers.logger import warning, info
 from helpers.timer import Timer
-from objects.privileges import Privileges, ClientPrivileges
+from constants.privileges import Privileges, ClientPrivileges
+from constants import packets
+from objects.player import Player
 
 bancho = Router(f"c.{glob.config.domain}")
 
@@ -73,14 +74,15 @@ async def login(req: Request) -> bytes:
         user["md5"] = pw
 
         p = await Player.login(user)
+        await p.set_stats()
 
         resp = bytearray(
             packets.user_id(p.id),
         )
 
         resp += packets.protocol_version(19)
-        resp += packets.bancho_privileges(ClientPrivileges.Player | ClientPrivileges.Supporter)
-        resp += packets.bot_presence(p) + packets.bot_stats(p)
+        resp += packets.bancho_privileges(p.client_priv)
+        resp += packets.user_presence(p) + packets.user_stats(p)
         resp += packets.channel_info_end()
         resp += packets.main_menu_icon(
             icon_url = "https://cdn.discordapp.com/avatars/272111921610752003/7c6ed0fca6122c3b5a0028444d4f1ee3.webp?size=80",

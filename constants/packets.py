@@ -20,7 +20,7 @@ from typing import Union
 
 if TYPE_CHECKING:
     from random import choice as Match
-    from .player import Player
+    from ..objects.player import Player
 
 # tuple of some of struct's format specifiers
 # for clean access within packet pack/unpack.
@@ -814,7 +814,7 @@ def bot_stats(p: "Player") -> bytes: # just id until i make the object
 
 # packet id: 11
 def user_stats(p: "Player") -> bytes:
-    gm_stats = p.gm_stats
+    gm_stats = p.cur_stats
     if gm_stats.pp > 0x7FFF:
         # over osu! pp cap, we'll have to
         # show their pp as ranked score.
@@ -827,12 +827,12 @@ def user_stats(p: "Player") -> bytes:
     return write(
         ServerPackets.USER_STATS,
         (p.id, osuTypes.i32),
-        (p.status.action, osuTypes.u8),
-        (p.status.info_text, osuTypes.string),
-        (p.status.map_md5, osuTypes.string),
-        (p.status.mods, osuTypes.i32),
-        (p.status.mode.as_vanilla, osuTypes.u8),
-        (p.status.map_id, osuTypes.i32),
+        (p.action, osuTypes.u8),
+        (p.info, osuTypes.string),
+        (p.map_md5, osuTypes.string),
+        (p.mods, osuTypes.i32),
+        (p.mode_vn, osuTypes.u8),
+        (p.map_id, osuTypes.i32),
         (rscore, osuTypes.i64),
         (gm_stats.acc / 100.0, osuTypes.f32),
         (gm_stats.plays, osuTypes.i32),
@@ -1086,12 +1086,12 @@ def user_presence(p: "Player") -> bytes:
         ServerPackets.USER_PRESENCE,
         (p.id, osuTypes.i32),
         (p.name, osuTypes.string),
-        (p.utc_offset + 24, osuTypes.u8),
-        (p.geoloc["country"]["numeric"], osuTypes.u8),
-        (p.bancho_priv | (p.status.mode.as_vanilla << 5), osuTypes.u8),
-        (p.geoloc["longitude"], osuTypes.f32),
-        (p.geoloc["latitude"], osuTypes.f32),
-        (p.gm_stats.rank, osuTypes.i32),
+        (p.offset + 24, osuTypes.u8),
+        (p.country, osuTypes.u8),
+        (p.bancho_priv | (p.mode_vn << 5), osuTypes.u8),
+        (0.0, osuTypes.f32),
+        (0.0, osuTypes.f32),
+        (p.cur_stats.rank, osuTypes.i32),
     )
 
 
