@@ -60,7 +60,7 @@ async def login(req: Request) -> bytes:
         resp += packets.bancho_privileges(ClientPrivileges.Player | ClientPrivileges.Supporter)
         resp += packets.bot_presence(3, "Aochi") + packets.bot_stats(3)
         resp += packets.channel_info_end()
-        resp += packets.friends_list(())
+        resp += packets.friends_list(0)
         resp += packets.silence_end(0)
         resp += packets.notification(f"Welcome to Resonance v{glob.version}, {user['name']}!\nTook: {t.time()}")
 
