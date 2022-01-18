@@ -62,7 +62,7 @@ async def login(req: Request) -> bytes:
         resp += packets.channel_info_end()
         resp += packets.friends_list(())
         resp += packets.silence_end(0)
-        resp += packets.notification(f"Welcome to Resonance v{glob.version}, {user['name']}!")
+        resp += packets.notification(f"Welcome to Resonance v{glob.version}, {user['name']}!\nTook: {t.time()}")
 
         req.resp_headers["osu-token"] = token
         return bytes(resp)
