@@ -8,7 +8,7 @@ from objects import glob
 from helpers.logger import info, error
 
 app = Xevel(glob.config.socket)
-glob.version = Version(0, 0, 8)
+glob.version = Version(0, 0, 9)
 
 @app.before_serving()
 async def connect() -> None:
@@ -21,6 +21,14 @@ async def connect() -> None:
         raise SystemExit(1)
     info(f"Resonance v{glob.version} started")
 
+
+@app.after_serving()
+async def disconnect() -> None:
+    info(f"Resonance v{glob.version} starting")
+
+    await glob.db.close()
+
+    info(f"Resonance v{glob.version} stopped")
 
 if __name__ == '__main__':
     from endpoints.bancho import bancho
