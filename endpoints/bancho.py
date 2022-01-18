@@ -64,7 +64,7 @@ async def login(req: Request) -> bytes:
             icon_url = "https://cdn.discordapp.com/avatars/272111921610752003/7c6ed0fca6122c3b5a0028444d4f1ee3.webp?size=80",
             onclick_url = "https://fuquila.net"
         )
-        resp += packets.friends_list()
+        resp += packets.friends_list(3)
         resp += packets.silence_end(0)
         resp += packets.notification(f"Welcome to Resonance v{glob.version}, {user['name']}!\nTook: {t.time()}")
 
