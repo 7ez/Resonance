@@ -1089,8 +1089,8 @@ def user_presence(p: "Player") -> bytes:
         (p.offset + 24, osuTypes.u8),
         (p.country, osuTypes.u8),
         (int(p.client_priv) | (p.mode_vn << 5), osuTypes.u8),
-        (0.0, osuTypes.f32),
-        (0.0, osuTypes.f32),
+        (12.0, osuTypes.f32),
+        (34.0, osuTypes.f32),
         (p.cur_stats.rank, osuTypes.i32),
     )
 
