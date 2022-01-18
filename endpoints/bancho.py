@@ -10,7 +10,7 @@ bancho = Router(f"c.{glob.config.domain}")
 
 ROOT_PAGE = f"Resonance v{glob.version}, gone wrong"
 
-@app.route("/", ["GET", "POST"])
+@bancho.route("/", ["GET", "POST"])
 async def login(req: Request) -> bytes:
     t = Timer()
     headers = req.headers
