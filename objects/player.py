@@ -43,7 +43,7 @@ class Player:
         self.country: Optional[int] = kwargs.get('country')
         self.loc: Optional[list[float]] = kwargs.get("loc", [0.0, 0.0])
 
-        self.friends: list[int] = []
+        self.friends: set[int] = ()
         
         self.queue = bytearray()
 
@@ -67,7 +67,7 @@ class Player:
             priv=Privileges(user["priv"]),
         )
 
-        self.friends = [user["id"]]
+        self.friends.add(self.id)
 
         if self.priv & Privileges.Restricted:
             self.restricted = True
