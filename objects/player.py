@@ -67,7 +67,7 @@ class Player:
             priv=Privileges(user["priv"]),
         )
 
-        self.friends.add(self.id)
+        self.friends + self.id
 
         if self.priv & Privileges.Restricted:
             self.restricted = True
