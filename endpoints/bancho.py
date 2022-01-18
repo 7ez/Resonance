@@ -84,10 +84,7 @@ async def login(req: Request) -> bytes:
         resp += packets.bancho_privileges(p.client_priv)
         resp += packets.user_presence(p) + packets.user_stats(p)
         resp += packets.channel_info_end()
-        resp += packets.main_menu_icon(
-            icon_url = "https://cdn.discordapp.com/avatars/272111921610752003/7c6ed0fca6122c3b5a0028444d4f1ee3.webp?size=80",
-            onclick_url = "https://fuquila.net"
-        )
+        resp += packets.main_menu_icon(**glob.config.menu_icon)
         resp += packets.friends_list(*p.friends)
         resp += packets.silence_end(0)
         resp += packets.notification(f"Welcome to Resonance v{glob.version}, {p.name}!\nTook: {t.time()}")
