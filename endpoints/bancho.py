@@ -94,6 +94,4 @@ async def login(req: Request) -> bytes:
 
         req.resp_headers["cho-token"] = token
         return bytes(resp)
-    else:
-        return packets.restart_server(0)
         
