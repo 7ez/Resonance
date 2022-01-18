@@ -12,7 +12,7 @@ glob.version = Version(0, 0, 2)
 async def connect() -> None:
     info(f"Resonance v{glob.version} starting")    
     try:
-        # glob.db = await fatFawkSQL.connect(**glob.config.mysql) # testing and i dont use a db
+        glob.db = await fatFawkSQL.connect(**glob.config.mysql)
         info("Connected to MySQL!")
     except Exception as e:
         error(f"Failed to connect to MySQL!\n\n{e}")
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     from endpoints.bancho import bancho
 
     app.add_router(bancho)
-    
+
     app.start()
 else:
     info("Run Resonance directly (`./main.py`)")
