@@ -69,6 +69,6 @@ async def login(req: Request) -> bytes:
         resp += packets.notification(f"Welcome to Resonance v{glob.version}, {user['name']}!\nTook: {t.time()}")
 
         req.resp_headers["osu-token"] = token
-        print(bytes(resp)
+        print(bytes(resp))
         return bytes(resp)
         
