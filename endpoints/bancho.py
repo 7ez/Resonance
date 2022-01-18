@@ -33,6 +33,7 @@ async def login(req: Request) -> bytes:
 
         # user = await glob.db.fetchrow("SELECT * FROM users WHERE name = %s", [username])
         user = { # debug purposes
+            "name": "Aochi",
             "pw": pw,
             "priv": 3
         }
@@ -61,6 +62,7 @@ async def login(req: Request) -> bytes:
         resp += packets.channel_info_end()
         resp += packets.friends_list(())
         resp += packets.silence_end(0)
+        resp += packets.notification(f"Welcome to Resonance v{glob.version}, {user['name']}!")
 
         req.resp_headers["osu-token"] = token
         return bytes(resp)
