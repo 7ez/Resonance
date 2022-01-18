@@ -13,7 +13,7 @@ async def connect() -> None:
     info(f"Resonance v{glob.version} starting")    
     try:
         # glob.db = await fatFawkSQL.connect(**glob.config.mysql) # testing and i dont use a db
-        ("Connected to MySQL!")
+        info("Connected to MySQL!")
     except Exception as e:
         error(f"Failed to connect to MySQL!\n\n{e}")
         raise SystemExit(1)
