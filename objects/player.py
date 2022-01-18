@@ -22,7 +22,9 @@ class Player:
         "offset",
         "silence_end",
         "action",
-        "info"
+        "info",
+        "restricted",
+        "frozen"
     )
 
     def __init__(self, **kwargs) -> None:
