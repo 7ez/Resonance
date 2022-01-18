@@ -20,7 +20,7 @@ async def login(req: Request) -> bytes:
         return ROOT_PAGE.encode()
 
     if "osu-token" not in headers:
-        if len(user_data := (req.body).decode().split("\n")) != 3:
+        if len(user_data := (req.body).decode().split("\n")[:-1]) != 3:
             req.resp_headers["cho-token"] = "no"
             return packets.user_id(-2)
 
