@@ -29,7 +29,7 @@ async def login(req: Request) -> bytes:
             return packets.user_id(-2)
         
         username = user_data[0]
-        pw = user_data[1].decode() # currently using md5 auth (LOL) fr tho im just too lazy to think of which pw hash thingy to use
+        pw = user_data[1] # currently using md5 auth (LOL) fr tho im just too lazy to think of which pw hash thingy to use
 
         # user = await glob.db.fetchrow("SELECT * FROM users WHERE name = %s", [username])
         user = { # debug purposes
