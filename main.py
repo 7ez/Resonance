@@ -8,7 +8,7 @@ from objects import glob
 from helpers.logger import info, error
 
 app = Xevel(glob.config.socket)
-glob.version = Version(0, 0, 9)
+glob.version = Version(0, 1, 0)
 
 @app.before_serving()
 async def connect() -> None:
