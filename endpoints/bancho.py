@@ -87,7 +87,9 @@ async def login(req: Request) -> bytes:
         resp += packets.main_menu_icon(**glob.config.menu_icon)
         resp += packets.friends_list(*p.friends)
         resp += packets.silence_end(0)
-        resp += packets.notification(f"Welcome to Resonance v{glob.version}, {p.name}!\nTook: {t.time()}")
+        resp += packets.notification(f"Welcome to Resonance v{glob.version}, {p.name}!\nTime Elapsed: {t.time()}")
+
+        info(f"{p.name} logged in successfully. | Time Elapsed: {t.time()}")
 
         req.resp_headers["cho-token"] = token
         return bytes(resp)
