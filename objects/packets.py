@@ -20,7 +20,7 @@ from typing import Union
 
 if TYPE_CHECKING:
     from random import choice as Match
-    from random import choice as Player
+    from .player import Player
 
 # tuple of some of struct's format specifiers
 # for clean access within packet pack/unpack.
@@ -790,13 +790,13 @@ BOT_STATUSES = (
 
 
 @cache
-def bot_stats(p: int) -> bytes: # just id until i make the object
+def bot_stats(p: "Player") -> bytes: # just id until i make the object
     # pick at random from list of potential statuses.
     status_id, status_txt = random.choice(BOT_STATUSES)
 
     return write(
         ServerPackets.USER_STATS,
-        (p, osuTypes.i32),  # id
+        (p.id, osuTypes.i32),  # id
         (status_id, osuTypes.u8),  # action
         (status_txt, osuTypes.string),  # info_text
         ("", osuTypes.string),  # map_md5
@@ -1066,11 +1066,11 @@ def match_player_skipped(pid: int) -> bytes:
 # friends list, their presence is requested
 # *very* frequently; only build it once.
 @cache
-def bot_presence(uid: int, name: str) -> bytes:
+def bot_presence(p: "Player") -> bytes:
     return write(
         ServerPackets.USER_PRESENCE,
-        (uid, osuTypes.i32),
-        (name, osuTypes.string),
+        (p.id, osuTypes.i32),
+        (p.name, osuTypes.string),
         (-5 + 24, osuTypes.u8),
         (245, osuTypes.u8),  # satellite provider
         (31, osuTypes.u8),

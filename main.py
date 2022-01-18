@@ -24,6 +24,7 @@ if __name__ == '__main__':
     from endpoints.bancho import bancho
 
     app.add_router(bancho)
+    
     app.start()
 else:
     info("Run Resonance directly (`./main.py`)")

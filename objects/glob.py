@@ -11,5 +11,5 @@ db: 'fatFawkSQL'
 version: 'Version'
 
 cache = {
-    # idk what imma cache here yet
+    'pw': {}
 }
