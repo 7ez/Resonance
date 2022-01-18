@@ -59,7 +59,7 @@ class Player:
         self.priv: Privileges = kwargs.get('priv', Privileges(0))
 
         self.country_iso: Optional[str] = kwargs.get('country_iso')
-        self.country: int = 616
+        self.country: int = 174 # hardcoded to poland
         self.loc: Optional[list[float]] = kwargs.get("loc", [0.0, 0.0])
 
         self.friends: set[int] = set()
