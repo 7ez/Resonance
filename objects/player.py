@@ -126,7 +126,6 @@ class Player:
     def client_priv(self) -> ClientPrivileges:
         priv = ClientPrivileges(0)
         priv |= ClientPrivileges.Player
-        priv |= ClientPrivileges.Supporter
 
         if self.restricted:
             return priv
