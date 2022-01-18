@@ -1,3 +1,5 @@
+#!/usr/bin/python3.9
+
 from xevel import Xevel
 from fatFuckSQL import fatFawkSQL
 from cmyui import Version
