@@ -5,17 +5,17 @@ from fatFuckSQL import fatFawkSQL
 from cmyui import Version
 
 from objects import glob
-from helpers.logger import info, error
+from helpers.logger import info, error, debug
 
 app = Xevel(glob.config.socket)
 glob.version = Version(0, 1, 1)
 
 @app.before_serving()
 async def connect() -> None:
-    info(f"Resonance v{glob.version} starting")    
+    debug(f"Resonance v{glob.version} starting")    
     try:
         glob.db = await fatFawkSQL.connect(**glob.config.mysql)
-        info("Connected to MySQL!")
+        debug("Connected to MySQL!")
     except Exception as e:
         error(f"Failed to connect to MySQL!\n\n{e}")
         raise SystemExit(1)
@@ -24,7 +24,7 @@ async def connect() -> None:
 
 @app.after_serving()
 async def disconnect() -> None:
-    info(f"Resonance v{glob.version} starting")
+    debug(f"Resonance v{glob.version} stopping")
 
     await glob.db.close()
 

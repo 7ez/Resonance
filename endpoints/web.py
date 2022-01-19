@@ -55,6 +55,6 @@ async def ingameRegistration(request: Request) -> Union[dict, bytes]:
             [name, email, pw_hash, get_safe_name(name), time.time()],
         )
         await glob.db.execute("INSERT INTO stats (id) VALUES (%s)", [uid])
-        info(f"{name} successfully registered. | Time Elapsed: {t.time()}",)
+        info(f"{name} successfully registered. | Time Elapsed: {t.time()}")
     
     return b"ok"

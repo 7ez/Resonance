@@ -13,3 +13,5 @@ menu_icon = {
     "icon_url": "https://cdn.discordapp.com/attachments/916091304826531881/933139165191741440/meme.png",
     "onclick_url": "https://fuquila.net"
 }
+
+debug = False

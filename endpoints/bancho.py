@@ -5,17 +5,49 @@ from cryptography.exceptions import InvalidKey
 from cryptography.hazmat.backends import default_backend as backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.hkdf import HKDFExpand
+from typing import Callable, Type
 
 from objects import glob
-from helpers.logger import warning, info
+from helpers.logger import warning, info, debug
 from helpers.timer import Timer
 from constants.privileges import Privileges
 from constants import packets
 from objects.player import Player
+from constants.packets import BanchoPacketReader, BasePacket
+from constants.packets import ClientPackets
 
 bancho = Router(f"c.{glob.config.domain}")
 
 ROOT_PAGE = f"Resonance v{glob.version}, gone wrong"
+
+def packet(
+    packet: ClientPackets,
+    allow_res: bool = False,
+) -> Callable[[Type[BasePacket]], Type[BasePacket]]:
+
+    def wrapper(cls: Type[BasePacket]) -> Type[BasePacket]:
+        packets["all"][packet] = cls
+
+        if allow_res:
+            packets["restricted"][packet] = cls
+
+        return cls
+
+    return wrapper
+
+@packet(ClientPackets.LOGOUT, True)
+class Logout(BasePacket):
+    def __init__(self, reader: BanchoPacketReader) -> None:
+        reader.read_i32()
+
+    async def handle(self, p: Player) -> None:
+        if (time.time() - p.login_time) < 1:
+            return
+
+        p.logout()
+        info(f"{p.name} has logged out.")
+        
+
 
 @bancho.route("/", ["GET", "POST"])
 async def login(req: Request) -> bytes:
@@ -94,4 +126,21 @@ async def login(req: Request) -> bytes:
 
         req.resp_headers["cho-token"] = token
         return bytes(resp)
-        
+
+    user_token = headers["osu-token"]
+    if not (p := await glob.players.get(token=user_token)):
+        return packets.restart_server(0)
+
+    body = req.body
+
+    if p.restricted:
+        ap = packets["restricted"]
+    else:
+        ap = packets["all"]
+
+    with memoryview(body) as body_view:
+        for packet in BanchoPacketReader(body_view, ap):
+            await packet.handle(p)
+            debug(f"Packet {packet.__class__.__name__} handled for {p.name}")
+
+    return p.dequeue() or b""
