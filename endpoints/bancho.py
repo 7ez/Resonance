@@ -183,7 +183,7 @@ async def login(req: Request) -> bytes:
             if not chan.auto:
                 continue
 
-            chan_packet = packets.channel_info(chan.name, chan.desc, chan.count())
+            chan_packet = packets.channel_info(chan.name, chan.desc, chan.count)
 
             resp += chan_packet
 
