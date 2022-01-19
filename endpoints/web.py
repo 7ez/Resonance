@@ -15,50 +15,46 @@ from helpers.logger import info
 web = Router(f'osu.{glob.config.domain}')
 
 @web.route("/users", ["POST"])
-async def register(req: Request) -> Union[dict, bytes]:
+async def ingameRegistration(request: Request) -> Union[dict, bytes]:
     t = Timer()
     t.start()
-    args = req.args
+    pargs = request.args
 
-    name = args["user[username]"].strip()  # truly amazing
-    email = args["user[user_email]"].strip()
-    pw = args["user[password]"].strip()
+    name = pargs["user[username]"].strip()
+    email = pargs["user[user_email]"].strip()
+    pw = pargs["user[password]"].strip()
 
-    if args.get('check') is None or all((name, email, pw)):
-        return b"missing required parameters"
+    if not pargs.get("check") or not all((name, email, pw)):
+        return b"missing required paramaters"
 
-    err = defaultdict(list)
-
+    errors = defaultdict(list)
     if " " in name and "_" in name:
-        err["username"].append('Username can not contain both " " and "_"')
+        errors["username"].append('Username cannot contain both "_" and " "')
 
-    if await glob.db.fetchval("SELECT 1 FROM users WHERE name = %s" [name]):
-        err["username"].append("Username already in use!")
+    if await glob.db.fetchval("SELECT 1 FROM users WHERE name = %s", [name]):
+        errors["username"].append("Username already in use!")
 
     if await glob.db.fetchval("SELECT 1 FROM users WHERE email = %s", [email]):
-        err["user_email"].append("Email already in use!")
+        errors["user_email"].append("Email already in use!")
 
     if not len(pw) >= 8:
-        err["password"].append("Your password must have more than 8 characters!")
+        errors["password"].append("Password must have more than 8 characters")
 
-    if err:
-        return {"form_error": {"user": err}}
+    if errors:
+        return {"form_error": {"user": errors}}
 
-    if int(args["check"]) == 0:
+    if int(pargs["check"]) == 0:
         pw_md5 = md5(pw.encode()).hexdigest().encode()
-        k = HKDFExpand(algorithm=hashes.SHA256(), length=32, info=b'', backend=backend())
-        pw_hash = k.derive(pw_md5).decode("unicode-escape")
+        k = HKDFExpand(algorithm=hashes.SHA256(), length=32, info=b"", backend=backend())
+        pw_hash = k.derive(md5).decode("unicode-escape")
 
         glob.cache["pw"][pw_hash] = pw_md5
 
-        user_id = await glob.db.execute(
-            "INSERT INTO users (name, safe_name, email, pw, registered_at VALUES (%s, %s, %s, %s, %s)",
-            [name, get_safe_name(name), email, pw_hash, time.time()]
+        uid = await glob.db.execute(
+            "INSERT INTO users (name, email, pw, safe_name, registered_at) VALUES (%s, %s, %s, %s, %s)",
+            [name, email, pw_hash, get_safe_name(name), time.time()],
         )
-        await glob.db.execute("INSERT INTO stats (id) VALUES (%s)", user_id)
-
-        info(f"{name} has successfully registered. | Time Elapsed: {t.time()}")
+        await glob.db.execute("INSERT INTO stats (id) VALUES (%s)", [uid])
+        info(f"{name} successfully registered. | Time Elapsed: ",)
     
-        return b"ok"
-
-    return b"no"
+    return b"ok"
