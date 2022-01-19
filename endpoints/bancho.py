@@ -194,7 +194,7 @@ async def login(req: Request) -> bytes:
 
     body = req.body
 
-    if p.restricted:
+    if not p.restricted:
         ap = glob.packets
     else:
         ap = glob.packets_res
