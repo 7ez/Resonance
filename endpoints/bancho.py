@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives.kdf.hkdf import HKDFExpand
 from objects import glob
 from helpers.logger import warning, info
 from helpers.timer import Timer
-from constants.privileges import Privileges, ClientPrivileges
+from constants.privileges import Privileges
 from constants import packets
 from objects.player import Player
 
