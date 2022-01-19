@@ -26,10 +26,10 @@ def packet(
 ) -> Callable[[Type[BasePacket]], Type[BasePacket]]:
 
     def wrapper(cls: Type[BasePacket]) -> Type[BasePacket]:
-        packets["all"][packet] = cls
+        glob.packets[packet] = cls
 
         if allow_res:
-            packets["restricted"][packet] = cls
+            glob.packets[packet] = cls
 
         return cls
 
@@ -113,14 +113,20 @@ async def login(req: Request) -> bytes:
             packets.user_id(p.id),
         )
 
+        user_info = packets.user_presence(p) + packets.user_stats(p)
+
         resp += packets.protocol_version(19)
-        resp += packets.bancho_privileges(p.client_priv)
-        resp += packets.user_presence(p) + packets.user_stats(p)
+        resp += packets.bancho_privileges(p.client_priv)   
+        resp += user_info
         resp += packets.channel_info_end()
         resp += packets.main_menu_icon(**glob.config.menu_icon)
         resp += packets.friends_list(*p.friends)
         resp += packets.silence_end(0)
         resp += packets.notification(f"Welcome to Resonance v{glob.version}, {p.name}!\nTime Elapsed: {t.time()}")
+
+        if not p.restricted:
+            for p in glob.players:
+                p.enqueue(user_info)
 
         info(f"{p.name} logged in successfully. | Time Elapsed: {t.time()}")
 
@@ -134,9 +140,9 @@ async def login(req: Request) -> bytes:
     body = req.body
 
     if p.restricted:
-        ap = packets["restricted"]
+        ap = glob.packets
     else:
-        ap = packets["all"]
+        ap = glob.packets_res
 
     with memoryview(body) as body_view:
         for packet in BanchoPacketReader(body_view, ap):

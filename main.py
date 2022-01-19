@@ -6,13 +6,15 @@ from cmyui import Version
 
 from objects import glob
 from helpers.logger import info, error, debug
+from objects.player import PlayerList
 
 app = Xevel(glob.config.socket)
 glob.version = Version(0, 1, 1)
 
 @app.before_serving()
 async def connect() -> None:
-    debug(f"Resonance v{glob.version} starting")    
+    debug(f"Resonance v{glob.version} starting")
+    glob.players = PlayerList()
     try:
         glob.db = await fatFawkSQL.connect(**glob.config.mysql)
         debug("Connected to MySQL!")

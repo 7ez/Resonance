@@ -12,6 +12,9 @@ db: 'fatFawkSQL'
 version: 'Version'
 players: 'PlayerList'
 
+packets = {}
+packets_res = {}
+
 cache = {
     'pw': {}
 }
