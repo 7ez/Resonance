@@ -17,8 +17,8 @@ class Timer:
         self.end = 0
 
     def time(self) -> str:
-        time = self.end()
-        if time < 1:
-            return str(round(time * 1000, 2)) + "ms"
+        _time = self.end()
+        if _time < 1:
+            return str(round(_time * 1000, 2)) + "ms"
         else:
-            return str(round(time, 2)) + "s"
+            return str(round(_time, 2)) + "s"
