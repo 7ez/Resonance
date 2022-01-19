@@ -10,7 +10,7 @@ from objects.player import PlayerList
 from objects.channel import Channel
 
 app = Xevel(glob.config.socket)
-glob.version = Version(0, 1, 5)
+glob.version = Version(0, 1, 7)
 
 @app.before_serving()
 async def connect() -> None:
