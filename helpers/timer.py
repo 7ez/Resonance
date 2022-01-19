@@ -13,8 +13,8 @@ class Timer:
         return self.end_time - self.start_time
 
     def reset(self) -> None:
-        self.start = 0
-        self.end = 0
+        self.start_time = 0
+        self.end_time = 0
 
     def time(self) -> str:
         _time = self.end()
