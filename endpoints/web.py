@@ -10,9 +10,22 @@ from collections import defaultdict
 from objects import glob
 from helpers.timer import Timer
 from helpers.utils import get_safe_name
-from helpers.logger import info
+from helpers.logger import info, error
 
 web = Router(f'osu.{glob.config.domain}')
+
+if glob.config.debug:
+    @web.after_request()
+    async def logRequest(resp: Request) -> Request:
+        if resp.code >= 400:
+            log_func = error
+        else:
+            log_func = info
+
+        log_func(
+            f"[{resp.type}] {resp.code} {resp.url} | Time Elapsed: {resp.elapsed}",
+        )
+        return resp
 
 @web.route("/users", ["POST"])
 async def ingameRegistration(request: Request) -> Union[dict, bytes]:

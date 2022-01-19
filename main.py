@@ -1,6 +1,6 @@
 #!/usr/bin/python3.9
 
-from xevel import Xevel, Request
+from xevel import Xevel
 from fatFuckSQL import fatFawkSQL
 from cmyui import Version
 
@@ -22,19 +22,6 @@ async def connect() -> None:
         error(f"Failed to connect to MySQL!\n\n{e}")
         raise SystemExit(1)
     info(f"Resonance v{glob.version} started")
-
-if glob.config.debug:
-    @app.after_request()
-    async def logRequest(resp: Request) -> Request:
-        if resp.code >= 400:
-            log_func = error
-        else:
-            log_func = info
-
-        log_func(
-            f"[{resp.type}] {resp.code} {resp.url} | Time Elapsed: {resp.elapsed}",
-        )
-        return resp
 
 @app.after_serving()
 async def disconnect() -> None:
