@@ -14,6 +14,7 @@ players: 'PlayerList'
 
 packets = {}
 packets_res = {}
+channels = {}
 
 cache = {
     'pw': {}

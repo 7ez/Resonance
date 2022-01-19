@@ -6,6 +6,8 @@ from constants.privileges import Privileges, ClientPrivileges
 from helpers.utils import get_safe_name
 from constants.modes import osuModes
 from constants import packets
+from objects.channel import Channel
+from helpers.logger import debug
 
 @dataclass
 class Stats:
@@ -211,6 +213,14 @@ class Player:
                 sender.id
             )
         )
+
+    def join_chan(self, chan: Channel):
+        if self in chan.players:
+            return
+
+        chan.add_player(self)
+        debug(f"{self.name} joined {chan.name}")
+
 
 class PlayerList(list[Player]):
     def __init__(self, *args, **kwargs) -> None:

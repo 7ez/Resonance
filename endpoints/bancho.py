@@ -101,6 +101,18 @@ class SendPM(BasePacket):
 
         t.send(msg, p)
 
+@packet(ClientPackets.CHANNEL_JOIN, True)
+class ChannelJoin(BasePacket):
+    def __init__(self, reader: BanchoPacketReader) -> None:
+        self.name = reader.read_string()
+
+    async def handle(self, p: Player) -> None:
+        chan = glob.channels[self.name]
+
+        if not chan or not p.join_chan(chan):
+            warning(f"{p.name} failed to join channel {self.name}")
+            return
+
 @bancho.route("/", ["GET", "POST"])
 async def login(req: Request) -> bytes:
     t = Timer()

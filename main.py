@@ -7,6 +7,7 @@ from cmyui import Version
 from objects import glob
 from helpers.logger import info, error, debug
 from objects.player import PlayerList
+from objects.channel import Channel
 
 app = Xevel(glob.config.socket)
 glob.version = Version(0, 1, 5)
@@ -21,6 +22,11 @@ async def connect() -> None:
     except Exception as e:
         error(f"Failed to connect to MySQL!\n\n{e}")
         raise SystemExit(1)
+
+    async for chan in glob.db.iter("SELECT name, desc, auto, perm FROM channels"):
+        glob.channels.append(Channel(**chan))
+        debug(f"Added {chan['name']} to channels")
+
     info(f"Resonance v{glob.version} started")
 
 @app.after_serving()
