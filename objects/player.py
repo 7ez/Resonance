@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterator
-from typing import Optional
+from typing import Optional, Iterator, Union
 
 from objects import glob
 from constants.privileges import Privileges, ClientPrivileges
@@ -87,6 +86,30 @@ class Player:
         self.frozen: bool = False
 
     @classmethod
+    async def from_sql(cls, typ: Union[str, int]) -> Optional["Player"]:
+        if isinstance(typ, str):
+            type = "name"
+        elif isinstance(typ, int):
+            type = "id"
+        else:
+            return # :tf:
+
+        user = await glob.db.fetchrow(f"SELECT * FROM users WHERE {type} = %s", [typ])
+
+        if not user:
+            return
+
+        self = cls(
+            id=user["id"],
+            name=user["name"],
+            country_iso=user["country"],
+            priv=Privileges(user["priv"]),
+        )
+
+        return self
+        
+
+    @classmethod
     async def login(cls, user: dict) -> "Player":
         self = cls(
             id=user["id"],
@@ -101,7 +124,8 @@ class Player:
 
         glob.players.append(self)
 
-        self.friends.add(self.id)
+        async for user in glob.db.iter("SELECT user2 FROM friends WHERE user1 = %s", [self.id]):
+            self.friends.add(user["user2"])
 
         if self.priv & Privileges.Restricted:
             self.restricted = True
@@ -225,7 +249,8 @@ class PlayerList(list[Player]):
             if getattr(u, utype) == user:
                 return u
         else:
-            return
+            if kwargs.get("sql") and utype != "token":
+                return await Player.from_sql(user)
 
     # kind of useless given we have get(),
     # however packet reader needs non-async func sooo here we are
