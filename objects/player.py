@@ -164,6 +164,20 @@ class Player:
 
         return priv
 
+    async def add_friend(self, t: "Player") -> None:
+        if t.id in self.friends:
+            return
+
+        await glob.db.execute("INSERT INTO friends (user1, user2) VALUES (%s, %s)", [self.id, t.id])
+        self.friends.add(t.id)
+
+    async def rm_friend(self, t: "Player") -> None:
+        if not t.id in self.friends:
+            return
+
+        await glob.db.execute("DELETE FROM friends WHERE user1 = %s AND user2 = %s", [self.id, t.id])
+        self.friends.remove(t.id)
+
 class PlayerList(list[Player]):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

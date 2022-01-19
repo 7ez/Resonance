@@ -1,3 +1,4 @@
+from multiprocessing.connection import Client
 import uuid, time
 
 from xevel import Router, Request
@@ -41,13 +42,35 @@ class Logout(BasePacket):
         reader.read_i32()
 
     async def handle(self, p: Player) -> None:
-        if (time.time() - p.login_time) < 1:
+        if (time.time() - p.login_time) < 0.3: # 300ms
             return
 
         p.logout()
         info(f"{p.name} has logged out.")
         
+@packet(ClientPackets.FRIEND_ADD, True)
+class AddFriend(BasePacket):
+    def __init__(self, reader: BanchoPacketReader) -> None:
+        self.uid = reader.read_i32()
 
+    async def handle(self, p: Player) -> None:
+        if not (t := await glob.players.get(id=self.uid)):
+            info(f"{p.name} tried adding {t.name} when they're offline!")
+            return
+
+        await p.add_friend(t)
+
+@packet(ClientPackets.FRIEND_REMOVE, True)
+class RemoveFriend(BasePacket):
+    def __init__(self, reader: BanchoPacketReader) -> None:
+        self.uid = reader.read_i32()
+
+    async def handle(self, p: Player) -> None:
+        if not (t := await glob.players.get(id=self.uid)):
+            info(f"{p.name} tried removing {t.name} when they're offline!")
+            return
+
+        await p.rm_friend(t)
 
 @bancho.route("/", ["GET", "POST"])
 async def login(req: Request) -> bytes:
