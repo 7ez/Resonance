@@ -147,9 +147,11 @@ async def login(req: Request) -> bytes:
         resp += packets.silence_end(0)
         resp += packets.notification(f"Welcome to Resonance v{glob.version}, {p.name}!\nTime Elapsed: {t.time()}")
 
-        if not p.restricted:
-            for p in glob.players:
-                p.enqueue(user_info)
+        for u in glob.players:
+            resp += packets.user_presence(u) + packets.user_stats(p)
+            if not p.restricted:
+                u.enqueue(user_info)
+
 
         info(f"{p.name} logged in successfully. | Time Elapsed: {t.time()}")
 
