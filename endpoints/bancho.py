@@ -180,15 +180,9 @@ async def login(req: Request) -> bytes:
         user_info = packets.user_presence(p) + packets.user_stats(p)
         
         for chan in glob.channels.values():
-            if not chan.auto:
-                continue
-
-            chan_packet = packets.channel_info(chan.name, chan.desc, chan.count)
-
-            resp += chan_packet
-
-            for u in glob.players:
-                u.enqueue(chan_packet)
+            if chan.auto:
+                p.join_chan(chan)
+                
 
         resp += packets.protocol_version(19)
         resp += packets.bancho_privileges(p.client_priv)   
