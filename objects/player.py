@@ -204,12 +204,12 @@ class Player:
         await glob.db.execute("DELETE FROM friends WHERE user1 = %s AND user2 = %s", [self.id, t.id])
         self.friends.remove(t.id)
     
-    def send(self, msg: str, sender: "Player", chan: Optional[Channel]) -> None:
+    def send(self, msg: str, sender: "Player") -> None:
         self.enqueue(
             packets.send_message(
                 sender.name,
                 msg,
-                (chan or self).name,
+                self.name,
                 sender.id
             )
         )
