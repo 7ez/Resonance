@@ -26,10 +26,10 @@ class Channel:
         self.players: list = []
 
 
-    def add_player(self, u: Player) -> None:
+    def add_player(self, u: "Player") -> None:
         self.players.append(u)
     
-    def rm_player(self, u: Player) -> None:
+    def rm_player(self, u: "Player") -> None:
         self.players.remove(u)
 
         if not len(self.players) and not self.perm:

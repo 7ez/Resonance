@@ -214,12 +214,14 @@ class Player:
             )
         )
 
-    def join_chan(self, chan: Channel):
+    def join_chan(self, chan: Channel) -> bool:
         if self in chan.players:
-            return
+            return False
 
         chan.add_player(self)
         debug(f"{self.name} joined {chan.name}")
+
+        return True
 
 
 class PlayerList(list[Player]):
