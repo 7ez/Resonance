@@ -116,19 +116,19 @@ class SendMessage(BasePacket):
         if not msg:
             return
 
-        t_chan = self.msg.recipient
+        t = self.msg.recipient
 
-        if not (t := glob.channels.get(t_chan)):
+        if not (t_chan := glob.channels.get(t)):
             info(f"{p.name} tried to send a message in a non-existent channel.")
             return
 
         if p not in t.players:
-            info(f"{p.name} tried to send a message in channel {t.name} without being in it.")
+            info(f"{p.name} tried to send a message in channel {t_chan.name} without being in it.")
 
         if len(msg) > 2000: # idk why but yeah
             msg = f"{msg[:2000]}..."
 
-        t.send(msg, p)
+        t_chan.send(msg, p)
 
 @packet(ClientPackets.CHANNEL_JOIN, True)
 class ChannelJoin(BasePacket):
