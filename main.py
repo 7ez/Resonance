@@ -23,7 +23,7 @@ async def connect() -> None:
         error(f"Failed to connect to MySQL!\n\n{e}")
         raise SystemExit(1)
 
-    async for chan in glob.db.iter("SELECT name, desc, auto, perm FROM channels"):
+    async for chan in glob.db.iter("SELECT * FROM channels"):
         glob.channels.append(Channel(**chan))
         debug(f"Added {chan['name']} to channels")
 
