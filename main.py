@@ -24,7 +24,7 @@ async def connect() -> None:
         raise SystemExit(1)
 
     async for chan in glob.db.iter("SELECT * FROM channels"):
-        glob.channels.append(Channel(**chan))
+        glob.channels[chan["name"]] = Channel(**chan)
         debug(f"Added {chan['name']} to channels")
 
     info(f"Resonance v{glob.version} started")
