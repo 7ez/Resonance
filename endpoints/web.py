@@ -38,7 +38,7 @@ async def register(req: Request) -> Union[dict, bytes]:
     if await glob.db.fetchval("SELECT 1 FROM users WHERE email = %s", [email]):
         err["user_email"].append("Email already in use!")
 
-    if len(pw) <= 8:
+    if not len(pw) >= 8:
         err["password"].append("Your password must have more than 8 characters!")
 
     if err:
