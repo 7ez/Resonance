@@ -1,6 +1,7 @@
 from typing import Optional, TYPE_CHECKING
 
 from objects import glob
+from constants import packets
 
 if TYPE_CHECKING:
     from objects.player import Player
@@ -44,5 +45,16 @@ class Channel:
         ignore_list.append(glob.players.get_online(id=ignore))
 
         glob.players.enqueue(b, ignore_list)
+
+    def send(self, msg: str, sender: "Player") -> None:
+        packet = packets.send_message(
+            sender.name,
+            msg,
+            self.name,
+            sender.id
+        )
+
+        for p in self.players:
+            p.enqueue(packet)
 
     

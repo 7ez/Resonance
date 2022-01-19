@@ -101,6 +101,35 @@ class SendPM(BasePacket):
 
         t.send(msg, p)
 
+@packet(ClientPackets.SEND_PUBLIC_MESSAGE)
+class SendMessage(BasePacket):
+    def __init__(self, reader: BanchoPacketReader) -> None:
+        self.msg = reader.read_message()
+    
+    async def handle(self, p: Player) -> None:
+        if p.silence_end > time.time():
+            info(f"{p.name} tried sending a message while silenced.")
+            return
+
+        msg = self.msg.text.strip()
+
+        if not msg:
+            return
+
+        t_chan = self.msg.recipient
+
+        if not (t := glob.channels.get(t_chan)):
+            info(f"{p.name} tried to send a message in a non-existent channel.")
+            return
+
+        if p not in t.players:
+            info(f"{p.name} tried to send a message in channel {t.name} without being in it.")
+
+        if len(msg) > 2000: # idk why but yeah
+            msg = f"{msg[:2000]}..."
+
+        t.send(msg, p)
+
 @packet(ClientPackets.CHANNEL_JOIN, True)
 class ChannelJoin(BasePacket):
     def __init__(self, reader: BanchoPacketReader) -> None:
@@ -182,7 +211,7 @@ async def login(req: Request) -> bytes:
         for chan in glob.channels.values():
             if chan.auto:
                 p.join_chan(chan)
-                
+
 
         resp += packets.protocol_version(19)
         resp += packets.bancho_privileges(p.client_priv)   
