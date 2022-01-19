@@ -55,6 +55,7 @@ class Channel:
         )
 
         for p in self.players:
-            p.enqueue(packet)
+            if p.id != sender.id:
+                p.enqueue(packet)
 
     
