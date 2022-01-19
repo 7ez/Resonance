@@ -179,7 +179,7 @@ async def login(req: Request) -> bytes:
 
         user_info = packets.user_presence(p) + packets.user_stats(p)
         
-        for chan in glob.channels:
+        for chan in glob.channels.values():
             if not chan.auto:
                 continue
 
