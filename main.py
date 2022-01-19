@@ -9,7 +9,7 @@ from helpers.logger import info, error, debug
 from objects.player import PlayerList
 
 app = Xevel(glob.config.socket)
-glob.version = Version(0, 1, 1)
+glob.version = Version(0, 1, 3)
 
 @app.before_serving()
 async def connect() -> None:
