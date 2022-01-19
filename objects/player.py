@@ -81,6 +81,9 @@ class Player:
         self.offset: Optional[int] = kwargs.get('offset')
         self.silence_end: Optional[int] = kwargs.get('silence_end', 0)
 
+        self.restricted: bool = False
+        self.frozen: bool = False
+
     @classmethod
     async def login(cls, user: dict) -> "Player":
         self = cls(
