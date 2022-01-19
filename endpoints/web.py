@@ -59,4 +59,6 @@ async def register(req: Request) -> Union[dict, bytes]:
 
         info(f"{name} has successfully registered. | Time Elapsed: {t.time()}")
     
-    return b"ok"
+        return b"ok"
+
+    return b"no"
