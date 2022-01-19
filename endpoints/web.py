@@ -24,7 +24,7 @@ async def register(req: Request) -> Union[dict, bytes]:
     email = args["user[user_email]"].strip()
     pw = args["user[password]"].strip()
 
-    if not args.get('check') or all((name, email, pw)):
+    if args.get('check') is None or all((name, email, pw)):
         return b"missing required parameters"
 
     err = defaultdict(list)
