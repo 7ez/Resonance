@@ -117,8 +117,9 @@ class SendMessage(BasePacket):
             return
 
         t = self.msg.recipient
+        t_chan = glob.channels[t]
 
-        if not (t_chan := glob.channels.get(t)):
+        if not t_chan:
             info(f"{p.name} tried to send a message in a non-existent channel.")
             return
 
