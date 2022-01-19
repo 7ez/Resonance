@@ -1,7 +1,9 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from objects import glob
-from objects.player import Player
+
+if TYPE_CHECKING:
+    from objects.player import Player
 
 
 class Channel:
