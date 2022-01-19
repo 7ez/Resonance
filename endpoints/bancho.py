@@ -99,7 +99,7 @@ class SendPM(BasePacket):
         if len(msg) > 2000: # idk why but yeah
             msg = f"{msg[:2000]}..."
 
-        t.enqueue(packets.write_message(p.name, msg, t.name, p.id))
+        t.send(msg, p)
 
 @bancho.route("/", ["GET", "POST"])
 async def login(req: Request) -> bytes:
