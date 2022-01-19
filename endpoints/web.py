@@ -15,15 +15,21 @@ from helpers.logger import info, error
 web = Router(f'osu.{glob.config.domain}')
 
 if glob.config.debug:
+
     @web.after_request()
     async def logRequest(resp: Request) -> Request:
+        if resp.extras.get("player"):
+            ret = f' | Request by {resp.extras.pop("player").name}'
+        else:
+            ret = ""
+
         if resp.code >= 400:
             log_func = error
         else:
             log_func = info
 
         log_func(
-            f"[{resp.type}] {resp.code} {resp.url} | Time Elapsed: {resp.elapsed}",
+            f"[{resp.type}] {resp.code} {resp.url}{ret} | Time Elapsed: {resp.elapsed}",
         )
         return resp
 

@@ -72,6 +72,35 @@ class RemoveFriend(BasePacket):
 
         await p.rm_friend(t)
 
+@packet(ClientPackets.SEND_PRIVATE_MESSAGE)
+class SendPM(BasePacket):
+    def __init__(self, reader: BanchoPacketReader) -> None:
+        self.msg = reader.read_message()
+    
+    async def handle(self, p: Player) -> None:
+        if p.silence_end > time.time():
+            info(f"{p.name} tried sending a message while silenced.")
+            return
+
+        msg = self.msg.text.strip()
+
+        if not msg:
+            return
+
+        t_user = self.msg.recipient
+
+        if not (t := await glob.players.get(name=t_user)):
+            info(f"{p.name} tried to send a message to a offline/non-existent user.")
+            return
+
+        if t.silence_end > time.time():
+            p.enqueue(packets.target_silenced(t.name))
+
+        if len(msg) > 2000: # idk why but yeah
+            msg = f"{msg[:2000]}..."
+
+        t.enqueue(packets.write_message(p.name, msg, t.name, p.id))
+
 @bancho.route("/", ["GET", "POST"])
 async def login(req: Request) -> bytes:
     t = Timer()
