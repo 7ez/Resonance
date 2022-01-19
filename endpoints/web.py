@@ -46,7 +46,7 @@ async def ingameRegistration(request: Request) -> Union[dict, bytes]:
     if int(pargs["check"]) == 0:
         pw_md5 = md5(pw.encode()).hexdigest().encode()
         k = HKDFExpand(algorithm=hashes.SHA256(), length=32, info=b"", backend=backend())
-        pw_hash = k.derive(md5).decode("unicode-escape")
+        pw_hash = k.derive(pw_md5).decode("unicode-escape")
 
         glob.cache["pw"][pw_hash] = pw_md5
 
@@ -55,6 +55,6 @@ async def ingameRegistration(request: Request) -> Union[dict, bytes]:
             [name, email, pw_hash, get_safe_name(name), time.time()],
         )
         await glob.db.execute("INSERT INTO stats (id) VALUES (%s)", [uid])
-        info(f"{name} successfully registered. | Time Elapsed: ",)
+        info(f"{name} successfully registered. | Time Elapsed: {t.time()}",)
     
     return b"ok"
