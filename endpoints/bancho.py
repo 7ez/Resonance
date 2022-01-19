@@ -1,6 +1,7 @@
 import uuid, time
 
 from xevel import Router, Request
+from cryptography.exceptions import InvalidKey
 from cryptography.hazmat.backends import default_backend as backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.hkdf import HKDFExpand
@@ -56,7 +57,7 @@ async def login(req: Request) -> bytes:
             k = HKDFExpand(algorithm=hashes.SHA256(), length=32, info=b'', backend=backend())
             try:
                 k.verify(pw, user_pw)
-            except Exception:
+            except InvalidKey:
                 warning(f"{username}'s login failed; Invalid password.")
                 req.resp_headers["cho-token"] = "no"
                 return packets.user_id(-1)
