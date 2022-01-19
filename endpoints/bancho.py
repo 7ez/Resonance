@@ -117,13 +117,12 @@ class SendMessage(BasePacket):
             return
 
         t = self.msg.recipient
-        t_chan = glob.channels[t]
 
-        if not t_chan:
+        if not (t_chan := glob.players.get(t)):
             info(f"{p.name} tried to send a message in a non-existent channel.")
             return
 
-        if p not in t.players:
+        if not p in t_chan.players:
             info(f"{p.name} tried to send a message in channel {t_chan.name} without being in it.")
 
         if len(msg) > 2000: # idk why but yeah
@@ -152,7 +151,7 @@ async def login(req: Request) -> bytes:
     if ("User-Agent" not in headers or headers["User-Agent"] != "osu!" or req.type == "GET"):
         return ROOT_PAGE.encode()
 
-    if "osu-token" not in headers:
+    if not "osu-token" in headers:
         if len(user_data := (req.body).decode().split("\n")[:-1]) != 3:
             req.resp_headers["cho-token"] = "no"
             return packets.user_id(-2)
