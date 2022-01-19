@@ -7,7 +7,7 @@ from helpers.utils import get_safe_name
 from constants.modes import osuModes
 from constants import packets
 from objects.channel import Channel
-from helpers.logger import debug
+from helpers.logger import debug, info
 
 @dataclass
 class Stats:
@@ -219,7 +219,10 @@ class Player:
             return False
 
         chan.add_player(self)
-        debug(f"{self.name} joined {chan.name}")
+        self.enqueue(packets.channel_join(chan.name))
+        for u in glob.players:
+            u.enqueue(packets.channel_info(chan.name, chan.desc, chan.count))
+        info(f"{self.name} joined {chan.name}")
 
         return True
 
