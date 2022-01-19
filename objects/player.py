@@ -66,7 +66,7 @@ class Player:
 
         self.friends: set[int] = set()
         
-        self.queue = bytearray(),
+        self.queue = bytearray()
 
         self.stats: dict[osuModes, Stats] = {}
 
