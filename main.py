@@ -32,8 +32,10 @@ async def disconnect() -> None:
 
 if __name__ == '__main__':
     from endpoints.bancho import bancho
+    from endpoints.web import web
 
     app.add_router(bancho)
+    app.add_router(web)
 
     app.start()
 else:
