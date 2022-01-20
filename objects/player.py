@@ -7,7 +7,7 @@ from helpers.utils import get_safe_name
 from constants.modes import osuModes
 from constants import packets
 from objects.channel import Channel
-from helpers.logger import debug, info
+from helpers.logger import info
 
 @dataclass
 class Stats:
