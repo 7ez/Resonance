@@ -273,9 +273,9 @@ class PlayerList(list[Player]):
         for u in self:
             if getattr(u, utype) == user:
                 return u
-        else:
-            if kwargs.get("sql") and utype != "token":
-                return await Player.from_sql(user)
+            else:
+                if kwargs.get("sql") and utype != "token":
+                    return await Player.from_sql(user)
 
     # kind of useless given we have get(),
     # however packet reader needs non-async func sooo here we are
