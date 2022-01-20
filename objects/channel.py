@@ -33,7 +33,7 @@ class Channel:
     def rm_player(self, u: "Player") -> None:
         self.players.remove(u)
 
-        if not len(self.players) and not self.perm:
+        if not self.players and not self.perm:
             glob.channels.remove(self)
 
     @property
